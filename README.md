@@ -1,7 +1,7 @@
-# Fullhaura Earnings, public view
+# Quiet Ledger, public view
 
-Live ElevenLabs voice earnings, read from Stripe. Voice names and account ids are never published.
-- `index.html`: the dashboard, discreet mode
+Real earnings, read from Stripe and published live. No names, no account details.
+- `index.html`: the ledger
 - `live.html`: today, live
 
 Data lives on the `data` branch and refreshes every few minutes.
