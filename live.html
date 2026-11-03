@@ -134,7 +134,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:10}
   </section>
 
   <section class="card" aria-label="Progress to the record day">
-    <h3><svg class="ic" viewBox="0 0 24 24"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></svg>Road to the record day<span class="num" id="pct"></span></h3>
+    <h3><svg class="ic" viewBox="0 0 24 24"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></svg>Road to the all-time record<span class="num" id="pct"></span></h3>
     <div class="meter" id="meter"></div>
     <p class="meter-note" id="meterNote"></p>
   </section>
@@ -211,8 +211,8 @@ const SEG = 30, frac = L.record ? total / L.record : 0, on = Math.min(SEG, Math.
 document.getElementById('meter').innerHTML = Array.from({length:SEG},(_,i)=>`<span class="${i<on?'on':i===on&&frac<1?'tip':''}"></span>`).join('');
 document.getElementById('pct').textContent = `${Math.round(frac*100)} %`;
 document.getElementById('meterNote').innerHTML = frac >= 1
-  ? `New record, <b>${eur(total-L.record)} €</b> above the best day`
-  : `<b>${eur(L.record-total)} €</b> to beat the record of ${eur(L.record)} €`;
+  ? `New all-time record, <b>${eur(total-L.record)} €</b> above the best day`
+  : `<b>${eur(L.record-total)} €</b> to beat the all-time record of ${eur(L.record)} € (${new Date(L.recordDate+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})})`;
 
 // cumulative chart, today vs yesterday
 (() => {
