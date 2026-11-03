@@ -280,6 +280,13 @@ if (urlMode) document.documentElement.classList.add('shot');      // screenshots
 let saved = {}; try { saved = JSON.parse(localStorage.getItem('fh_mode') || '{}'); } catch (e) {}
 let DISCREET = urlMode ? urlMode === 'discreet' : (saved.at > (D.modeAt || 0) ? !!saved.discreet : !!D.discreet);
 if (D.public) { DISCREET = true; document.documentElement.classList.add('shot'); }   // public site: names never shown, no toggle
+if (D.public) {   // public site: the method stays private, so 'voice' never appears on screen
+  const swap = t => t.replace(/\bvoices\b/g,'streams').replace(/\bVoices\b/g,'Streams').replace(/\bvoice\b/g,'stream').replace(/\bVoice\b/g,'Stream');
+  const scrub = root => { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const v = swap(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; }
+    root.querySelectorAll && root.querySelectorAll('[placeholder],[aria-label],[title]').forEach(e => ['placeholder','aria-label','title'].forEach(k => e.hasAttribute(k) && e.setAttribute(k, swap(e.getAttribute(k))))); };
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => n.nodeType === 1 ? scrub(n) : n.nodeType === 3 && (n.nodeValue = swap(n.nodeValue))))).observe(document.body, {childList:true, subtree:true, characterData:false});
+  addEventListener('load', () => scrub(document.body)); setTimeout(() => scrub(document.body), 0);
+}
 const PAL = ['#3987e5','#d95926','#199e70','#c98500','#d55181','#008300','#9085e9','#e66767'], OTHER = '#4a4a50';   // validated: CVD and contrast pass on #0a0a0b
 const C = {ink:'#ededed',ink2:'rgba(255,255,255,.66)',ink3:'rgba(255,255,255,.42)',rule:'rgba(255,255,255,.12)',panel:'#0a0a0b',panel2:'#141415',up:'#4cc38a',down:'#e5484d',money:'#4cc38a'};
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -234,7 +234,7 @@ document.getElementById('meterNote').innerHTML = frac >= 1
 // stats
 const nextV = L.next ? `<div class="v num" id="cd"></div><div class="d">${eur(L.next.amount)} € to my bank</div>` : `<div class="v num">None</div><div class="d">nothing on its way</div>`;
 document.getElementById('stats').innerHTML = `
-  <div class="stat"><div class="k">${IC.card}Payments today</div><div class="v num">${L.count}</div><div class="d">from ${new Set(L.today.map(p=>p[2])).size} voices</div></div>
+  <div class="stat"><div class="k">${IC.card}Payments today</div><div class="v num">${L.count}</div><div class="d">from ${new Set(L.today.map(p=>p[2])).size} streams</div></div>
   <div class="stat"><div class="k">${IC.flame}Streak</div><div class="v num">${L.streak} day${L.streak===1?'':'s'}</div><div class="d">in a row above ${eur(L.streakBar)} €</div></div>
   <div class="stat"><div class="k">${IC.bank}Next payout</div>${nextV}</div>
   <div class="stat"><div class="k">${IC.cal}This month</div><div class="v num">${eur(L.month)} €</div><div class="d">${eur(L.avg30)} € a day on average</div></div>`;
@@ -253,7 +253,7 @@ document.getElementById('feed').innerHTML = L.today.slice(0,20).map(([ts,n,r]) =
   `<li class="${ts>lastSeen && !RM ? 'new' : ''}">${rk(r)}<div><div class="who">***${n>=1000?'<span class="note">one-off</span>':''}</div><div class="ago" data-ts="${ts}">${ago(ts)}</div></div><div class="amt">+${eur(n)} €</div></li>`).join('');
 if (!SHOT) setInterval(()=>document.querySelectorAll('.ago').forEach(e=>e.textContent=ago(+e.dataset.ts)), 15000);
 
-document.getElementById('foot').textContent = `${L.voices} voices, updated every 30 s`;
+document.getElementById('foot').textContent = `${L.voices} streams, updated every 30 s`;
 
 // confetti when today passes another 10 € or the record, since the last look
 (() => {
