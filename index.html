@@ -222,6 +222,14 @@ tfoot td{font-weight:600;border-bottom:0;border-top:1px solid var(--rule2)}
     <div class="chart" id="cDaily" style="height:340px"></div>
   </section>
 
+  <section class="panel" id="usagePanel" hidden>
+    <div class="panel-head"><h2 id="usageTitle">Characters used</h2><span class="sub" id="usageSub"></span></div>
+    <div class="fc-cards" id="usageCards"></div>
+    <div class="chart" id="cUsage" style="height:180px"></div>
+    <div class="scroll"><table class="ledger" id="usageTbl"></table></div>
+    <p class="fc-note">From ElevenLabs' public Voice Library counters, read once a day. ElevenLabs only publishes rolling totals, so "per day" is the last 7 days divided by 7. Voices without a match are listed in data/voice_map.json to fill in.</p>
+  </section>
+
   <section class="panel">
     <div class="panel-head">
       <h2>All voices</h2>
@@ -620,6 +628,36 @@ function forecast(){
     ]}, true);
 }
 
+// ---------- character usage (private: ElevenLabs public counters, one snapshot a day)
+function usagePanel(){
+  const U = D.usage, P = document.getElementById('usagePanel');
+  if (!U || !Object.keys(U.per).length || D.public) { P.hidden = true; return; }
+  P.hidden = false; charts.cUsage && charts.cUsage.resize();
+  const last = U.dates.length - 1, fmtN = n => n == null ? '·' : Math.round(n).toLocaleString('fr-FR');
+  const per1k = (e,c) => c ? (e/c*1000/100).toLocaleString('fr-FR',{minimumFractionDigits:3,maximumFractionDigits:3}) + ' €' : '·';
+  const rows = Object.entries(U.per).map(([vi, arr]) => { const a = arr[last] || [null]; return {vi:+vi, c7:a[0], c1y:a[1], cl:a[2], lk:a[3], e7:sum(D.daily[+vi], N-7)}; })
+    .filter(r => r.c7 != null);
+  const scope = sel==null ? rows : rows.filter(r => r.vi === sel);
+  const c7 = scope.reduce((x,r)=>x+r.c7,0), e7 = scope.reduce((x,r)=>x+r.e7,0);
+  document.getElementById('usageTitle').textContent = sel==null ? 'Characters used, all matched voices' : `Characters used, ${V[sel].name}`;
+  document.getElementById('usageSub').textContent = `${rows.length} of ${NV} voices matched, updated ${fmtDay(U.dates[last],{day:'numeric',month:'short'})}`;
+  document.getElementById('usageCards').innerHTML = [
+    ['Last 7 days', fmtN(c7), 'characters'],
+    ['Per day', fmtN(c7/7), 'characters, 7-day average'],
+    ['Per 1 000 characters', per1k(e7,c7), 'earned, last 7 days'],
+    ['Last 12 months', fmtN(scope.reduce((x,r)=>x+(r.c1y||0),0)), 'characters'],
+  ].map(([k,v,d])=>`<div class="fc-card" style="border-style:solid"><div class="k">${k}</div><div class="v num">${v}</div><div class="d">${d}</div></div>`).join('');
+  const series = U.dates.map((d,i)=> Object.entries(U.per).reduce((x,[vi,arr])=> (sel==null || +vi===sel) && arr[i] && arr[i][0] != null ? x + arr[i][0] : x, 0));
+  charts.cUsage.setOption({...base(), grid:{left:56,right:10,top:12,bottom:26},
+    tooltip:{...tip,trigger:'axis',formatter:ps=>`<b>${fmtDay(U.dates[ps[0].dataIndex],{weekday:'short',...LONG})}</b><br>${fmtN(ps[0].value)} characters in the 7 days to that day`},
+    xAxis:{type:'category',data:U.dates,...axisCommon,axisLabel:{color:C.ink3,fontSize:11,formatter:v=>fmtDay(v)}},
+    yAxis:{type:'value',...axisCommon,axisLine:{show:false},axisLabel:{color:C.ink3,fontSize:11,formatter:v=>v>=1e6?(v/1e6).toLocaleString('fr-FR')+' M':v>=1e3?(v/1e3).toLocaleString('fr-FR')+' k':v}},
+    series:[{type:U.dates.length>1?'line':'bar',data:series,symbol:'circle',symbolSize:6,lineStyle:{width:2,color:C.money},itemStyle:{color:C.money},areaStyle:{color:'rgba(76,195,138,.12)'}}]}, true);
+  const list = (sel==null ? rows : scope).sort((a,b)=>b.c7-a.c7);
+  document.getElementById('usageTbl').innerHTML = `<thead><tr><th>Voice</th><th>7 days</th><th>Per day</th><th>12 months</th><th>€ per 1 000</th><th>Clones</th><th>Likes</th></tr></thead><tbody>${
+    list.map(r=>`<tr><td><span class="dot" style="background:${color(r.vi)}"></span>${esc(V[r.vi].name)}</td><td>${fmtN(r.c7)}</td><td>${fmtN(r.c7/7)}</td><td>${fmtN(r.c1y)}</td><td>${per1k(r.e7,r.c7)}</td><td>${fmtN(r.cl)}</td><td>${fmtN(r.lk)}</td></tr>`).join('')}</tbody>`;
+}
+
 // ---------- wiring
 const pick = document.getElementById('voice');
 function applyMode(){
@@ -640,7 +678,7 @@ function setVoice(vi){
   sel = (vi===''||vi==null) ? null : +vi;
   pick.value = sel==null ? '' : String(sel);
   document.getElementById('clear').hidden = sel==null;
-  focus(); pace(); forecast(); daily(); week(); cal(); table(); ledger();
+  focus(); pace(); forecast(); daily(); usagePanel(); week(); cal(); table(); ledger();
 }
 pick.onchange = e => setVoice(e.target.value);
 document.getElementById('clear').onclick = () => setVoice(null);
@@ -663,7 +701,7 @@ document.getElementById('updated').innerHTML = `Updated ${D.updatedLabel}` + (ag
 
 document.getElementById('legend').onclick = e => { const b = e.target.closest('.chip'); if (!b) return;
   b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='false'); charts.cDaily.dispatchAction({type:'legendToggleSelect', name:b.dataset.n}); };
-['cFc','cDaily','cWeek','cCal','cMovers'].forEach(id => charts[id] = echarts.init(document.getElementById(id)));
+['cFc','cDaily','cUsage','cWeek','cCal','cMovers'].forEach(id => charts[id] = echarts.init(document.getElementById(id)));
 hero(); movers(); bigPayments(); setVoice(null);
 let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { Object.values(charts).forEach(c=>c.resize()); forecast(); daily(); cal(); movers(); week(); }, 150); });
 })();
