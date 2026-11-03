@@ -227,7 +227,7 @@ tfoot td{font-weight:600;border-bottom:0;border-top:1px solid var(--rule2)}
     <div class="fc-cards" id="usageCards"></div>
     <div class="chart" id="cUsage" style="height:180px"></div>
     <div class="scroll"><table class="ledger" id="usageTbl"></table></div>
-    <p class="fc-note">From ElevenLabs' public Voice Library counters, read once a day. ElevenLabs only publishes rolling totals, so "per day" is the last 7 days divided by 7. Voices without a match are listed in data/voice_map.json to fill in.</p>
+    <p class="fc-note">From ElevenLabs' public Voice Library counters, read once a day. ElevenLabs only publishes rolling totals, so "per day" is the last 7 days divided by 7. Voices are matched by name and sharing date; the others appear once their ElevenLabs key is added.</p>
   </section>
 
   <section class="panel">
@@ -652,10 +652,10 @@ function usagePanel(){
     tooltip:{...tip,trigger:'axis',formatter:ps=>`<b>${fmtDay(U.dates[ps[0].dataIndex],{weekday:'short',...LONG})}</b><br>${fmtN(ps[0].value)} characters in the 7 days to that day`},
     xAxis:{type:'category',data:U.dates,...axisCommon,axisLabel:{color:C.ink3,fontSize:11,formatter:v=>fmtDay(v)}},
     yAxis:{type:'value',...axisCommon,axisLine:{show:false},axisLabel:{color:C.ink3,fontSize:11,formatter:v=>v>=1e6?(v/1e6).toLocaleString('fr-FR')+' M':v>=1e3?(v/1e3).toLocaleString('fr-FR')+' k':v}},
-    series:[{type:U.dates.length>1?'line':'bar',data:series,symbol:'circle',symbolSize:6,lineStyle:{width:2,color:C.money},itemStyle:{color:C.money},areaStyle:{color:'rgba(76,195,138,.12)'}}]}, true);
+    series:[{type:U.dates.length>1?'line':'bar',barMaxWidth:28,data:series,symbol:'circle',symbolSize:6,lineStyle:{width:2,color:C.money},itemStyle:{color:C.money},areaStyle:{color:'rgba(76,195,138,.12)'}}]}, true);
   const list = (sel==null ? rows : scope).sort((a,b)=>b.c7-a.c7);
-  document.getElementById('usageTbl').innerHTML = `<thead><tr><th>Voice</th><th>7 days</th><th>Per day</th><th>12 months</th><th>€ per 1 000</th><th>Clones</th><th>Likes</th></tr></thead><tbody>${
-    list.map(r=>`<tr><td><span class="dot" style="background:${color(r.vi)}"></span>${esc(V[r.vi].name)}</td><td>${fmtN(r.c7)}</td><td>${fmtN(r.c7/7)}</td><td>${fmtN(r.c1y)}</td><td>${per1k(r.e7,r.c7)}</td><td>${fmtN(r.cl)}</td><td>${fmtN(r.lk)}</td></tr>`).join('')}</tbody>`;
+  document.getElementById('usageTbl').innerHTML = `<thead><tr><th>Voice</th><th>7 days</th><th>Per day</th><th>12 months</th><th>€ per 1 000</th><th>Clones</th></tr></thead><tbody>${
+    list.map(r=>`<tr><td><span class="dot" style="background:${color(r.vi)}"></span>${esc(V[r.vi].name)}</td><td>${fmtN(r.c7)}</td><td>${fmtN(r.c7/7)}</td><td>${fmtN(r.c1y)}</td><td>${per1k(r.e7,r.c7)}</td><td>${fmtN(r.cl)}</td></tr>`).join('')}</tbody>`;
 }
 
 // ---------- wiring
