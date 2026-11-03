@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d12">
+<title>Live · Fullhaura</title>
+<style>
+/* Unslop pass (unslop by @heydamir, CC BY 4.0) · direction: exact, nocturnal, quietly proud · world: a recording booth at night
+   signature: the segmented level meter · moment: today's figure with the coin, and the road to record
+   Hallmark · macrostructure: live-ticker-terminal · genre: playful, crafted */
+@font-face{font-family:"Geist";src:url(vendor/geist.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(vendor/geist-mono.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  /* ink ramp, tinted toward night */
+  --deep:#07080d;--bg:#0b0d14;--card:#11141c;--raised:#1a1e28;
+  --line:rgba(238,240,245,.08);--line2:rgba(238,240,245,.14);
+  --ink:#eef0f5;--ink2:#a3a9b8;--ink3:#7a8296;
+  /* one accent: money */
+  --money:#4cc38a;--money-ink:#0b0d14;--down:#e5484d;
+  --sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg)}
+body{color:var(--ink);font:400 15px/1.45 var(--sans);-webkit-font-smoothing:antialiased;min-height:100vh}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono)}
+.app{max-width:480px;margin:0 auto;padding:0 16px 32px}
+.ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* ticker: real payments, so it may move */
+.ticker{overflow:hidden;border-bottom:1px solid var(--line);background:var(--deep);margin:0 -16px}
+.ticker .row{display:flex;gap:8px;padding:8px 0;width:max-content;animation:marquee 60s linear infinite}
+.tk{display:inline-flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:6px;background:var(--card);font:400 12px var(--mono);color:var(--ink2);white-space:nowrap}
+.tk b{font-weight:500;color:var(--money)}
+.tk.first{background:var(--raised);color:var(--ink)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* header */
+.head{display:flex;justify-content:space-between;align-items:center;height:56px}
+.live{display:inline-flex;align-items:center;gap:8px;font:500 13px var(--sans);color:var(--ink)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--money);box-shadow:0 0 8px var(--money);animation:live 2s var(--ease) infinite}
+@keyframes live{0%,100%{opacity:1}50%{opacity:.35}}
+.brand{font:600 16px var(--sans)}
+.clock{font:400 12px var(--mono);color:var(--ink3)}
+
+/* hero: the figure and the coin */
+.hero{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:8px 0 24px}
+.hero .lbl{font:400 13px var(--sans);color:var(--ink2)}
+.big{font:600 clamp(60px,17vw,84px)/1 var(--sans);font-variant-numeric:tabular-nums;letter-spacing:-.045em;color:var(--money);margin:8px 0 12px;white-space:nowrap;text-shadow:0 0 24px rgba(76,195,138,.55),0 0 2px rgba(76,195,138,.4)}
+.big small{font-size:.4em;font-weight:500;letter-spacing:-.01em;margin-left:2px}
+.coin{width:112px;height:112px;object-fit:cover;border-radius:50%;
+  -webkit-mask-image:radial-gradient(closest-side,#000 78%,transparent);mask-image:radial-gradient(closest-side,#000 78%,transparent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;grid-column:1/-1}
+.chip{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border:1px solid var(--line2);border-radius:8px;font:400 12px var(--mono);color:var(--ink2)}
+.chip b{font-weight:500;color:var(--ink)}
+.chip .up{color:var(--money)} .chip .dn{color:var(--down)}
+
+/* cards */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+.card h3{font:500 13px var(--sans);color:var(--ink2);display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.card h3 .ic{color:var(--ink3)}
+.card h3 .num{margin-left:auto;font:400 12px var(--mono);color:var(--ink)}
+
+/* road to record: the signature meter */
+.meter{display:flex;gap:4px;height:24px}
+.meter span{flex:1;border-radius:2px;background:var(--raised)}
+.meter span.on{background:var(--money);box-shadow:0 0 10px rgba(76,195,138,.55)}
+.meter span.tip{background:rgba(76,195,138,.4)}
+.meter-note{margin-top:12px;font:400 12px var(--mono);color:var(--ink2)}
+.meter-note b{font-weight:500;color:var(--ink)}
+
+/* chart */
+svg.cum{width:100%;height:136px;display:block}
+.legend{display:flex;gap:16px;margin-top:8px;font:400 12px var(--mono);color:var(--ink3)}
+.legend i{display:inline-block;width:16px;height:2px;margin-right:8px;vertical-align:middle}
+
+/* stats: numbers only */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stat .k{display:flex;align-items:center;gap:8px;font:400 12px var(--sans);color:var(--ink2)}
+.stat .k .ic{color:var(--ink3);width:14px;height:14px}
+.stat .v{font:500 24px/1.2 var(--sans);font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:8px}
+.stat .d{font:400 12px var(--mono);color:var(--ink3);margin-top:4px}
+
+/* king of the hill */
+.king{display:flex;align-items:center;gap:12px}
+.king .who{font:500 15px var(--sans)}
+.king .meta{font:400 12px var(--mono);color:var(--ink3)}
+.king .amt{margin-left:auto;font:500 20px var(--sans);font-variant-numeric:tabular-nums;color:var(--money);text-shadow:0 0 14px rgba(76,195,138,.45)}
+
+/* rank badges stand in for avatars: names stay hidden */
+.rk{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font:500 12px var(--mono);color:var(--ink2);background:var(--raised);flex:none}
+.rk.top{color:var(--money-ink);background:var(--money)}
+.tk .rk{width:24px;height:24px;border-radius:4px;font-size:11px}
+
+/* feed */
+.feed{list-style:none;padding:0}
+.feed li{display:flex;align-items:center;gap:12px;height:52px;border-bottom:1px solid var(--line);border-radius:8px}
+.feed li:last-child{border-bottom:0}
+.feed .who{font:500 14px var(--sans)}
+.feed .ago{font:400 12px var(--mono);color:var(--ink3)}
+.feed .note{font:400 12px var(--mono);color:var(--ink3);margin-left:8px}
+.feed .amt{margin-left:auto;font:500 14px var(--mono);color:var(--money)}
+.feed li.new{animation:arrive .5s var(--ease) both,settle 2.4s var(--ease) both}
+@keyframes arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@keyframes settle{0%{background:var(--raised)}100%{background:transparent}}
+.foot{margin-top:24px;text-align:center;font:400 12px var(--mono);color:var(--ink3)}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:10}
+
+@media (prefers-reduced-motion:reduce){.ticker .row,.live i,.feed li.new{animation:none}}
+.shot .ticker .row,.shot .live i{animation:none}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div class="app">
+  <div class="ticker" aria-hidden="true"><div class="row" id="ticker"></div></div>
+
+  <header class="head">
+    <span class="live"><i></i>Live</span>
+    <span class="brand">fullhaura</span>
+    <span class="clock" id="clock"></span>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="lbl">Today's revenue</p>
+      <div class="big" id="big">0,00<small> €</small></div>
+    </div>
+    <img class="coin" src="vendor/coin.webp" width="112" height="112" alt="A steel coin with a green enamel face engraved like a microphone grille" fetchpriority="high">
+    <div class="chips" id="chips"></div>
+  </section>
+
+  <section class="card" aria-label="Progress to the record day">
+    <h3><svg class="ic" viewBox="0 0 24 24"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></svg>Road to the record day<span class="num" id="pct"></span></h3>
+    <div class="meter" id="meter"></div>
+    <p class="meter-note" id="meterNote"></p>
+  </section>
+
+  <section class="card" aria-label="Today versus yesterday">
+    <h3><svg class="ic" viewBox="0 0 24 24"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>Today vs yesterday<span class="num" id="vsNow"></span></h3>
+    <svg class="cum" id="cum" viewBox="0 0 400 136" preserveAspectRatio="none" role="img" aria-label="Cumulative earnings today and yesterday by time of day"></svg>
+    <div class="legend"><span><i style="background:var(--money)"></i>today</span><span><i style="background:repeating-linear-gradient(90deg,#7a8296 0 4px,transparent 4px 8px)"></i>yesterday</span></div>
+  </section>
+
+  <section class="grid" id="stats"></section>
+
+  <section class="card king" id="king"></section>
+
+  <section class="card" aria-label="Live payments">
+    <h3><svg class="ic" viewBox="0 0 24 24"><path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z"/></svg>Live payments<span class="num" id="count"></span></h3>
+    <ul class="feed" id="feed"></ul>
+  </section>
+
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+(async () => {
+const L = await (await fetch("https://raw.githubusercontent.com/tristangrech/fullhaura-earnings/data/" + 'live.json?t=' + Date.now(), {cache: 'no-store'})).json();
+const q = new URLSearchParams(location.search), SHOT = q.has('shot');
+if (SHOT) document.documentElement.classList.add('shot');
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches || SHOT;
+const eur = c => (c/100).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const IC = {
+  card:'<svg class="ic" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M6 14h2"/></svg>',
+  flame:'<svg class="ic" viewBox="0 0 24 24"><path d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4"/></svg>',
+  bank:'<svg class="ic" viewBox="0 0 24 24"><path d="M10 18v-7"/><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M3 22h18"/><path d="M6 18v-7"/></svg>',
+  cal:'<svg class="ic" viewBox="0 0 24 24"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>',
+  crown:'<svg class="ic" viewBox="0 0 24 24"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></svg>'};
+const rk = (r, cls='') => `<span class="rk ${r===1?'top':''} ${cls}">#${r}</span>`;
+const ago = ts => { const s = Math.max(0, Date.now()/1000 - ts); return s < 60 ? 'just now' : s < 3600 ? `${Math.floor(s/60)} min ago` : `${Math.floor(s/3600)} h ${Math.floor(s%3600/60)} min ago`; };
+const hm = ts => new Date(ts*1000).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Rome'});
+
+const total = L.today.reduce((a,p)=>a+p[1],0);
+const nowS = Date.now()/1000, sinceMid = Math.min(86400, nowS - L.t0);
+const ySame = L.yday.filter(p=>p[0] <= sinceMid).reduce((a,p)=>a+p[1],0);
+const lastHour = L.today.filter(p=>p[0] >= nowS-3600).reduce((a,p)=>a+p[1],0);
+
+// what this screen already showed, so new money can arrive visibly
+let mem = {}; try { mem = JSON.parse(localStorage.getItem('fh_live')||'{}'); } catch(e) {}
+const prevTotal = mem.day === L.t0 ? mem.total : 0, lastSeen = mem.day === L.t0 ? mem.last : (SHOT ? Infinity : 0);
+if (!SHOT) localStorage.setItem('fh_live', JSON.stringify({day:L.t0, total, last: L.today[0] ? L.today[0][0] : 0}));
+
+// ticker
+const tk = L.today.slice(0,24).map((p,i)=>`<span class="tk${i===0?' first':''}">${rk(p[2])}*** <b>+${eur(p[1])} €</b> ${hm(p[0])}</span>`).join('');
+document.getElementById('ticker').innerHTML = tk + tk;
+
+// clock
+const clock = () => document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-GB',{timeZone:'Europe/Rome'});
+clock(); if (!SHOT) setInterval(clock, 1000);
+
+// the figure tweens from what you saw last time
+const big = document.getElementById('big');
+const show = c => big.innerHTML = `${eur(c)}<small> €</small>`;
+if (RM || prevTotal === total) show(total);
+else {
+  const from = prevTotal, t0 = performance.now(), dur = from ? 900 : 1400;
+  const step = t => { const k = Math.min(1,(t-t0)/dur), e = 1-Math.pow(1-k,3); show(Math.round(from + (total-from)*e)); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+const p = ySame ? Math.round((total-ySame)/ySame*100) : null;
+document.getElementById('chips').innerHTML =
+  `<span class="chip"><b>+${eur(lastHour)} €</b> in the last hour</span>` +
+  (p === null ? '' : `<span class="chip"><b class="${p>=0?'up':'dn'}">${p>=0?'▲':'▼'} ${Math.abs(p)} %</b> vs yesterday at ${hm(nowS)}</span>`);
+
+// road to the record day
+const SEG = 30, frac = L.record ? total / L.record : 0, on = Math.min(SEG, Math.floor(frac*SEG));
+document.getElementById('meter').innerHTML = Array.from({length:SEG},(_,i)=>`<span class="${i<on?'on':i===on&&frac<1?'tip':''}"></span>`).join('');
+document.getElementById('pct').textContent = `${Math.round(frac*100)} %`;
+document.getElementById('meterNote').innerHTML = frac >= 1
+  ? `New record, <b>${eur(total-L.record)} €</b> above the best day`
+  : `<b>${eur(L.record-total)} €</b> to beat the record of ${eur(L.record)} €`;
+
+// cumulative chart, today vs yesterday
+(() => {
+  const W=400,H=136,pad=6, maxY = Math.max(total, L.yday.reduce((a,p)=>a+p[1],0), 1);
+  const X = s => pad + s/86400*(W-2*pad), Y = c => H-pad - c/maxY*(H-2*pad);
+  const path = pts => pts.map((p,i)=>`${i?'L':'M'}${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(' ');
+  let c=0; const yPts=[[0,0]]; for (const [s,n] of L.yday){ c+=n; yPts.push([s,c]); } yPts.push([86400,c]);
+  c=0; const tPts=[[0,0]]; for (const [ts,n] of [...L.today].reverse()){ c+=n; tPts.push([ts-L.t0,c]); } tPts.push([sinceMid,c]);
+  const area = path(tPts) + ` L${X(sinceMid).toFixed(1)} ${H-pad} L${pad} ${H-pad} Z`;
+  document.getElementById('cum').innerHTML =
+    `<path d="M${pad} ${H-pad} H${W-pad}" stroke="rgba(238,240,245,.08)" vector-effect="non-scaling-stroke"/>
+     <path d="${path(yPts)}" fill="none" stroke="#7a8296" stroke-width="1.5" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
+     <path d="${area}" fill="rgba(76,195,138,.10)"/>
+     <path d="${path(tPts)}" fill="none" stroke="#4cc38a" stroke-width="2" vector-effect="non-scaling-stroke" style="filter:drop-shadow(0 0 6px rgba(76,195,138,.7))"/>
+     <circle cx="${X(sinceMid)}" cy="${Y(total)}" r="3.5" fill="#eef0f5"/>`;
+  document.getElementById('vsNow').textContent = `${eur(total)} vs ${eur(ySame)} €`;
+})();
+
+// stats
+const nextV = L.next ? `<div class="v num" id="cd"></div><div class="d">${eur(L.next.amount)} € to my bank</div>` : `<div class="v num">None</div><div class="d">nothing on its way</div>`;
+document.getElementById('stats').innerHTML = `
+  <div class="stat"><div class="k">${IC.card}Payments today</div><div class="v num">${L.count}</div><div class="d">from ${new Set(L.today.map(p=>p[2])).size} voices</div></div>
+  <div class="stat"><div class="k">${IC.flame}Streak</div><div class="v num">${L.streak} day${L.streak===1?'':'s'}</div><div class="d">in a row above ${eur(L.streakBar)} €</div></div>
+  <div class="stat"><div class="k">${IC.bank}Next payout</div>${nextV}</div>
+  <div class="stat"><div class="k">${IC.cal}This month</div><div class="v num">${eur(L.month)} €</div><div class="d">${eur(L.avg30)} € a day on average</div></div>`;
+if (L.next) { const cd = () => { let s = Math.max(0, L.next.at - Date.now()/1000); const d = Math.floor(s/86400); s%=86400;
+  const t = [Math.floor(s/3600), Math.floor(s%3600/60), Math.floor(s%60)].map(x=>String(x).padStart(2,'0')).join(':');
+  document.getElementById('cd').textContent = (d ? d+'d ' : '') + t; }; cd(); if (!SHOT) setInterval(cd, 1000); }
+
+// king of the hill
+const K = document.getElementById('king');
+if (L.king) K.innerHTML = `${rk(L.king[0])}<div><div class="who">King of the hill</div><div class="meta">#${L.king[0]} ***, ${total?Math.round(L.king[1]/total*100):0} % of today</div></div><div class="amt">${eur(L.king[1])} €</div>`;
+else K.remove();
+
+// feed
+document.getElementById('count').textContent = `${L.count} today`;
+document.getElementById('feed').innerHTML = L.today.slice(0,20).map(([ts,n,r]) =>
+  `<li class="${ts>lastSeen && !RM ? 'new' : ''}">${rk(r)}<div><div class="who">***${n>=1000?'<span class="note">one-off</span>':''}</div><div class="ago" data-ts="${ts}">${ago(ts)}</div></div><div class="amt">+${eur(n)} €</div></li>`).join('');
+if (!SHOT) setInterval(()=>document.querySelectorAll('.ago').forEach(e=>e.textContent=ago(+e.dataset.ts)), 15000);
+
+document.getElementById('foot').textContent = `${L.voices} voices, updated every 30 s`;
+
+// confetti when today passes another 10 € or the record, since the last look
+(() => {
+  if (RM || !prevTotal) return;
+  const crossed = Math.floor(total/1000) > Math.floor(prevTotal/1000) || (prevTotal < L.record && total >= L.record);
+  if (!crossed) return;
+  const cv = document.getElementById('fx'), x = cv.getContext('2d'); cv.width = innerWidth; cv.height = innerHeight;
+  const P = Array.from({length:120},()=>({x:innerWidth/2,y:innerHeight*.25,vx:(Math.random()-.5)*11,vy:-Math.random()*11-4,
+    r:Math.random()*4+3,c:['#4cc38a','#eef0f5','#a3a9b8'][Math.floor(Math.random()*3)],a:Math.random()*6}));
+  const t0 = performance.now();
+  const f = t => { x.clearRect(0,0,cv.width,cv.height);
+    for (const p of P){ p.vy += .32; p.x += p.vx; p.y += p.vy; p.a += .18; x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.fillStyle=p.c; x.fillRect(-p.r,-p.r/2,p.r*2,p.r); x.restore(); }
+    if (t - t0 < 2400) requestAnimationFrame(f); else x.clearRect(0,0,cv.width,cv.height); };
+  requestAnimationFrame(f);
+})();
+
+if (!SHOT) setTimeout(() => location.reload(), 30000);
+})();
+</script>
+</body>
+</html>

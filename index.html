@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Fullhaura Earnings</title>
+<script src="vendor/echarts.min.js"></script>
+<style>
+/* Hallmark · macrostructure: ledger-dashboard · genre: modern-minimal (monochrome) */
+/* Hallmark · pre-emit critique: P4 H5 E4 S4 R5 V4 */
+@font-face{font-family:"Geist";src:url(vendor/geist.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Geist Mono";src:url(vendor/geist-mono.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --black:#0a0a0b;--white:#ededed;
+  --ink:#ededed;--ink2:#a1a1a6;--ink3:#85858b;
+  --rule:#1f1f1f;--rule2:#333;--wash:#0d0d0d;--hover:#141414;
+  --sans:"Geist",system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace;
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:64px;
+  --pill:8px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--black);color:var(--ink);font:400 15px/1.55 var(--sans);-webkit-font-smoothing:antialiased;font-feature-settings:"ss01"}
+.num,td,.figure,.v{font-variant-numeric:tabular-nums}
+main{max-width:1320px;margin:0 auto;padding:max(var(--s5),env(safe-area-inset-top)) var(--s6) var(--s8)}
+button,select,input{font:inherit;color:inherit}
+h1{margin:0;font:600 17px/1.2 var(--sans);letter-spacing:-.01em}
+h1 em{font-style:normal;font-weight:400;color:var(--ink2)}
+h2{margin:0;font:500 18px/1.3 var(--sans);letter-spacing:-.015em}
+p{margin:0}
+.muted{color:var(--ink3)}
+.sub{color:var(--ink2);font-size:13px}
+#updated{font:400 12px var(--mono);color:var(--ink3)}
+
+/* every control: hover, active, focus-visible, disabled */
+.seg button,.mode,.clear,.chip,select,.search,#tbl th{transition:color .15s ease,background-color .15s ease,border-color .15s ease}
+.seg button:hover,.mode:hover,.clear:hover,.chip:hover{color:var(--ink)}
+.mode:hover,.clear:hover,.chip:hover,select:hover,.search:hover{border-color:#555}
+.seg button:active,.mode:active,.clear:active,.chip:active{background:var(--hover)}
+:focus-visible{outline:2px solid var(--white);outline-offset:2px}
+button:disabled,select:disabled,input:disabled{opacity:.4;cursor:not-allowed}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:var(--s3);padding-bottom:var(--s4);border-bottom:1px solid var(--rule2);margin-bottom:var(--s7)}
+.stale{color:var(--white);text-decoration:underline}
+.topr{display:flex;align-items:center;gap:var(--s4)}
+.mode{display:inline-flex;align-items:center;gap:var(--s2);background:none;border:1px solid var(--rule2);border-radius:var(--pill);padding:6px 12px;font-size:12.5px;font-weight:500;color:var(--ink2);cursor:pointer}
+.mode svg{width:15px;height:15px;flex:none}
+.mode[aria-pressed=true]{background:var(--white);color:var(--black);border-color:var(--white)}
+.shot .mode{display:none}
+
+/* hero: money on its way, drawn as a level meter */
+.chain{padding:0 0 var(--s6);border-bottom:1px solid var(--rule)}
+.chain-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s5);flex-wrap:wrap}
+.figure{font:500 clamp(60px,11vw,128px)/.9 var(--sans);letter-spacing:-.055em}
+.figure small{font-size:.36em;font-weight:500;letter-spacing:-.02em;margin-left:var(--s1);color:var(--ink2)}
+.chain-head .lead{color:var(--ink2);margin-top:var(--s4);max-width:36ch;font-size:15px}
+.landing{text-align:right}
+.landing b{display:block;font:500 32px/1.1 var(--sans);letter-spacing:-.035em;margin:var(--s1) 0}
+.meter{display:flex;align-items:center;gap:var(--s4);margin:var(--s6) 0 var(--s5)}
+.track{flex:1;display:flex;height:28px;gap:var(--s1);
+  -webkit-mask:repeating-linear-gradient(90deg,#000 0 3px,transparent 3px 6px);mask:repeating-linear-gradient(90deg,#000 0 3px,transparent 3px 6px)}
+.track span{display:block;height:100%;transform-origin:left;animation:fill 1.2s cubic-bezier(.2,.7,.2,1) both}
+.track .s1{background:#3a3a3a} .track .s2{background:#8f8f8f;animation-delay:.15s} .track .s3{background:var(--white);animation-delay:.3s}
+@keyframes fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.dest{font:500 14px var(--sans);white-space:nowrap;display:flex;align-items:center;gap:var(--s2)}
+.dest::before{content:"";width:24px;height:1px;background:var(--white)}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s5)}
+.stage{border-top:2px solid;padding-top:var(--s3)}
+.stage:nth-child(1){border-color:#3a3a3a} .stage:nth-child(2){border-color:#8f8f8f} .stage:nth-child(3){border-color:var(--white)}
+.stage .k{color:var(--ink2);font-size:13px;font-weight:500}
+.stage .v{font:500 26px/1.15 var(--sans);letter-spacing:-.03em;margin:var(--s1) 0}
+.stage .d{color:var(--ink3);font-size:12.5px;max-width:32ch}
+
+/* pace strip */
+.pace{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--rule)}
+.pace>div{padding:var(--s5) var(--s4);border-left:1px solid var(--rule)}
+.pace>div:first-child{border-left:0;padding-left:0}
+.pace .k{color:var(--ink2);font-size:13px;font-weight:500}
+.pace .v{font:500 28px/1.15 var(--sans);letter-spacing:-.035em;margin:var(--s1) 0 2px}
+.pace .d{font-size:12.5px;color:var(--ink3)}
+.delta{font-weight:500}
+.delta.up{color:var(--white)} .delta.down{color:#8a8a8a}
+
+/* controls */
+.controls{position:sticky;top:0;z-index:5;display:flex;gap:var(--s3);align-items:center;flex-wrap:wrap;
+  padding:var(--s4) 0;background:var(--black);border-bottom:1px solid var(--rule)}
+.seg{display:inline-flex;border:1px solid var(--rule2);border-radius:10px;padding:3px;overflow-x:auto;max-width:100%}
+.seg button{background:none;border:0;padding:6px 12px;border-radius:6px;color:var(--ink2);cursor:pointer;font-size:13.5px;font-weight:500;white-space:nowrap}
+.seg button[aria-pressed=true]{background:var(--white);color:var(--black)}
+select{background:var(--black);border:1px solid var(--rule2);border-radius:var(--pill);padding:var(--s2) var(--s4);max-width:min(320px,100%);font-size:13.5px}
+.clear{background:none;border:1px solid var(--rule2);border-radius:var(--pill);padding:6px 12px;cursor:pointer;color:var(--ink2);font-size:13.5px}
+
+/* sections: rules, not boxes */
+.panel{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--rule)}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s3);flex-wrap:wrap;margin-bottom:var(--s4)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 var(--s7)}
+.chart{width:100%}
+
+/* voice focus */
+.focus{padding:var(--s6) 0 var(--s5);border-bottom:1px solid var(--rule)}
+.focus h2{font:500 40px/1.05 var(--sans);letter-spacing:-.04em}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(176px,1fr));gap:var(--s4) var(--s5);margin-top:var(--s5)}
+.facts .k{color:var(--ink3);font-size:12.5px}
+.facts .v{font-size:15px;font-weight:500;margin-top:2px}
+
+/* forecast: dashed frames say "not money yet" */
+.fc-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin:0 0 var(--s4)}
+.fc-card{border:1px dashed var(--rule2);border-radius:8px;padding:var(--s4)}
+.fc-card .k{color:var(--ink2);font-size:13px;font-weight:500}
+.fc-card .v{font:500 26px/1.15 var(--sans);letter-spacing:-.035em;margin:var(--s1) 0}
+.fc-card .d{color:var(--ink3);font-size:12.5px}
+.fc-note{color:var(--ink3);font-size:12.5px;max-width:75ch;margin:var(--s2) 0 var(--s1)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--s2);margin:0 0 var(--s2)}
+.chip{display:inline-flex;align-items:center;gap:var(--s2);background:none;border:1px solid var(--rule2);border-radius:6px;padding:2px 12px 2px 8px;font-size:12.5px;color:var(--ink2);cursor:pointer;max-width:240px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:2px;flex:none}
+.chip[aria-pressed=false]{opacity:.4}
+.chip.line i{height:1px;width:16px;border-radius:0}
+
+/* table */
+.search{background:var(--black);border:1px solid var(--rule2);border-radius:var(--pill);padding:var(--s2) var(--s3);width:200px;font-size:13.5px}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:var(--s3) var(--s2);text-align:right;white-space:nowrap;border-bottom:1px solid var(--rule)}
+#tbl thead tr.groups th{font-size:12px;font-weight:600;color:var(--ink2);text-align:center;cursor:default;padding:var(--s1) var(--s2)}
+#tbl .gs{border-left:1px solid var(--rule)}
+th{color:var(--ink3);font-weight:500;font-size:12px;cursor:pointer;user-select:none;vertical-align:bottom}
+th:hover{color:var(--ink2)}
+th[aria-sort]{color:var(--white)}
+#tbl th:first-child,#tbl td:first-child{text-align:left;position:sticky;left:0;background:var(--black);z-index:1;max-width:240px;overflow:hidden;text-overflow:ellipsis;padding-left:0;font-weight:500}
+#tbl tbody tr{cursor:pointer}
+#tbl tbody tr:hover td{background:var(--wash)}
+#tbl tbody tr[aria-selected=true] td{background:var(--hover)}
+#tbl tbody tr[aria-selected=true] td:first-child{box-shadow:inset 2px 0 0 var(--white)}
+tfoot td{font-weight:600;border-bottom:0;border-top:1px solid var(--rule2)}
+.dot{display:none}
+.z{color:var(--ink3)}
+.share{display:inline-flex;align-items:center;gap:var(--s2)}
+.share i{display:inline-block;height:2px;background:var(--white)}
+.amber{color:var(--white);font-weight:600}
+
+/* ledger */
+.ledger th{cursor:default}
+.ledger td:first-child{font-weight:500;text-align:left;padding-left:0}
+.ledger th:first-child{text-align:left;padding-left:0}
+.ledger .who{color:var(--ink2);white-space:normal;text-align:left;min-width:260px}
+.tag{font-size:11.5px;font-weight:500;border-radius:6px;padding:2px 8px;border:1px solid var(--rule2);color:var(--ink2)}
+.tag.way{background:var(--white);color:var(--black);border-color:var(--white)}
+.tag.fail{border-color:var(--white);color:var(--white)}
+.foot{color:var(--ink3);font-size:12.5px;max-width:75ch;margin-top:var(--s5)}
+
+@media (max-width:900px){
+  .controls{position:static}
+  .fc-cards{grid-template-columns:1fr 1fr}
+  .pace{grid-template-columns:repeat(2,1fr)}
+  .pace>div{border-left:0;border-top:1px solid var(--rule);padding-left:0}
+  .pace>div:nth-child(-n+2){border-top:0}
+  .pace>div:nth-child(even){border-left:1px solid var(--rule);padding-left:var(--s4)}
+  .pace>div:last-child{grid-column:1/-1}
+  .grid2{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  main{padding-left:var(--s4);padding-right:var(--s4)}
+  .top{margin-bottom:var(--s6)}
+  .mode .lbl{display:none}
+  .landing{text-align:left}
+  .stages{grid-template-columns:1fr;gap:var(--s3)}
+  .stage{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:var(--s3)}
+  .stage .v{grid-column:2;grid-row:1;font-size:22px}
+  .stage .d{grid-column:1/-1}
+  .pace .v{font-size:24px}
+  .search{width:140px}
+}
+@media (prefers-reduced-motion:reduce){.track span{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>Fullhaura <em>Earnings</em></h1>
+    <div class="topr"><button class="mode" id="mode" aria-pressed="false" title="Hide voice names, for screenshots">Discreet</button><span class="sub" id="updated"></span></div>
+  </div>
+
+  <section class="chain" aria-labelledby="chainTitle">
+    <div class="chain-head">
+      <div>
+        <div class="figure num" id="owed"></div>
+        <p class="lead" id="chainTitle">earned by your voices and not in your Revolut yet</p>
+      </div>
+      <div class="landing" id="landing"></div>
+    </div>
+    <div class="meter" aria-hidden="true">
+      <div class="track" id="track"></div>
+      <div class="dest" id="dest">Revolut</div>
+    </div>
+    <div class="stages" id="stages"></div>
+  </section>
+
+  <section class="pace" id="pace" aria-label="Pace"></section>
+
+  <div class="controls" role="toolbar" aria-label="Filters">
+    <div class="seg" id="range" role="group" aria-label="Period">
+      <button data-r="7">7 days</button><button data-r="30">30 days</button><button data-r="90">90 days</button><button data-r="365">1 year</button><button data-r="all">All time</button>
+    </div>
+    <select id="voice" aria-label="Voice"></select>
+    <button class="clear" id="clear" hidden>Show all voices</button>
+  </div>
+
+  <section class="focus" id="focus" hidden></section>
+
+  <section class="panel" aria-labelledby="fcTitle">
+    <div class="panel-head"><h2 id="fcTitle">Forecast</h2><span class="sub">Not money yet, built from your last 28 days</span></div>
+    <div class="fc-cards" id="fcCards"></div>
+    <div class="chart" id="cFc" style="height:176px"></div>
+    <p class="fc-note" id="fcNote"></p>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2 id="dailyTitle">Earned per day</h2><span class="sub" id="dailySub"></span></div>
+    <div class="legend" id="legend"></div>
+    <div class="chart" id="cDaily" style="height:340px"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>All voices</h2>
+      <input class="search" id="search" type="search" placeholder="Find a voice" aria-label="Find a voice">
+    </div>
+    <div class="scroll"><table id="tbl"></table></div>
+    <p class="sub" style="margin:10px 0 4px">Select a voice to see its own charts, payouts and facts</p>
+  </section>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="panel-head"><h2 id="weekTitle">When your voices earn</h2><span class="sub" id="weekSub"></span></div>
+      <div class="chart" id="cWeek" style="height:250px"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2 id="calTitle">Every day</h2><span class="sub" id="calSub"></span></div>
+      <div class="chart" id="cCal" style="height:250px"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Biggest changes this week</h2><span class="sub" id="moversSub"></span></div>
+    <div class="chart" id="cMovers" style="height:330px"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Largest single payments</h2><span class="sub" id="bigSub"></span></div>
+    <div class="scroll"><table class="ledger" id="big"></table></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h2>Revolut landings</h2><span class="sub" id="ledgerSub"></span></div>
+    <div class="scroll"><table class="ledger" id="ledger"></table></div>
+  </section>
+
+
+
+
+
+
+
+  <p class="foot">Every figure is read from your Stripe Express accounts, after Stripe fees, in euros. Days and hours are Rome time.
+  Pending money is earned but held by Stripe, usually about a day. Available money goes out with the next payout. On its way means Stripe has sent the payout and it has not reached Revolut yet.
+  Changes compare the last 7 full days with the 7 days before them.</p>
+</main>
+
+<script>
+(async () => {
+const D = await (await fetch("https://raw.githubusercontent.com/tristangrech/fullhaura-earnings/data/" + 'data.json?t=' + Date.now(), {cache: 'no-store'})).json();
+const V = D.voices, NV = V.length, N = D.N;
+const REAL = V.map(v => v.name);
+// Discreet mode: names become ***, wording turns first person, for screenshots on social media.
+// Priority: ?mode= in the URL, then a newer choice made on this page, then the mode set from Telegram.
+const urlMode = new URLSearchParams(location.search).get('mode');
+if (urlMode) document.documentElement.classList.add('shot');      // screenshots: no toggle button
+let saved = {}; try { saved = JSON.parse(localStorage.getItem('fh_mode') || '{}'); } catch (e) {}
+let DISCREET = urlMode ? urlMode === 'discreet' : (saved.at > (D.modeAt || 0) ? !!saved.discreet : !!D.discreet);
+if (D.public) { DISCREET = true; document.documentElement.classList.add('shot'); }   // public site: names never shown, no toggle
+const PAL = Array(8).fill('#ededed'), OTHER = '#ededed';   // black and white: voices are told apart by name, not colour
+const C = {ink:'#ededed',ink2:'rgba(255,255,255,.66)',ink3:'rgba(255,255,255,.42)',rule:'rgba(255,255,255,.12)',panel:'#000000',panel2:'#111111',up:'#ededed',down:'#5c5c5c'};
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FONT = 'Geist, system-ui, sans-serif';
+
+// ---------- helpers
+const eur = c => (c/100).toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+const sum = (a,f=0,t=a.length) => {let s=0;for(let i=Math.max(0,f);i<Math.min(t,a.length);i++)s+=a[i];return s};
+const startMs = Date.parse(D.start+'T12:00:00Z');
+const dayISO = i => new Date(startMs + i*864e5).toISOString().slice(0,10);
+const fmtDay = (iso,o={day:'numeric',month:'short'}) => new Date(iso+'T12:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',...o});
+const LONG = {day:'numeric',month:'short',year:'numeric'};
+const utcISO = s => new Date(s*1000).toISOString().slice(0,10);   // payout arrival_date is 00:00 UTC of that day
+const pct = (a,b) => b ? Math.round((a-b)/b*100) : null;
+const deltaHTML = (a,b,word) => { const p = pct(a,b); if (p===null) return `<span class="muted">${word}</span>`;
+  const cls = p>0?'up':p<0?'down':''; const arrow = p>0?'▲ ':p<0?'▼ ':'';
+  return `<span class="delta ${cls}">${arrow}${Math.abs(p)} %</span> <span class="muted">${word}</span>`; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const total = Array.from({length:N}, (_,d) => { let s=0; for (const v of D.daily) s+=v[d]; return s; });
+const series = vi => vi==null ? total : D.daily[vi];
+const ONWAY = new Set(['pending','in_transit']);
+
+// colour follows the voice, fixed for the session: top 8 by the last 30 days
+const rank30 = V.map((_,i)=>i).sort((a,b)=>sum(D.daily[b],N-30)-sum(D.daily[a],N-30));
+const slot = {}; rank30.slice(0,8).forEach((vi,k)=>slot[vi]=k);
+const color = vi => vi in slot ? PAL[slot[vi]] : OTHER;
+
+// per-voice money in flight
+const onWay = V.map(()=>0), nextLand = V.map(()=>null), lastPaid = V.map(()=>null);
+for (const [vi,amt,st,cr,arr] of D.payouts){
+  if (ONWAY.has(st)){ onWay[vi]+=amt; const a=utcISO(arr); if(!nextLand[vi]||a<nextLand[vi]) nextLand[vi]=a; }
+  if (st==='paid') lastPaid[vi] = [amt, utcISO(arr)];
+}
+
+let range = '30', sel = null, sortKey = 'd7', sortDir = -1, query = '';
+const rangeDays = () => range==='all' ? N : Math.min(+range, N);
+
+// ---------- echarts setup
+const charts = {};
+const tip = {backgroundColor:'#000',borderColor:'rgba(255,255,255,.35)',textStyle:{color:C.ink,fontFamily:FONT,fontSize:13},confine:true};
+const base = () => ({animation:!RM, textStyle:{fontFamily:FONT,color:C.ink2}});
+const axisCommon = {axisLine:{lineStyle:{color:C.rule}},axisTick:{show:false},splitLine:{lineStyle:{color:C.rule}}};
+
+// ---------- hero (always all voices)
+function hero(){
+  const pend = V.reduce((s,v)=>s+v.pending,0), avail = V.reduce((s,v)=>s+v.available,0), way = onWay.reduce((s,x)=>s+x,0);
+  const owed = pend+avail+way;
+  const [i,f] = (owed/100).toFixed(2).split('.');
+  document.getElementById('owed').innerHTML = `${(+i).toLocaleString('fr-FR')}<small>,${f} €</small>`;
+  const lands = {}; for (const [vi,amt,st,cr,arr] of D.payouts) if (ONWAY.has(st)) { const a=utcISO(arr); (lands[a] ||= {amt:0,n:0}); lands[a].amt+=amt; lands[a].n++; }
+  const next = Object.keys(lands).sort()[0];
+  document.getElementById('landing').innerHTML = next
+    ? `<span class="sub">Next to land in ${DISCREET ? 'my bank' : 'Revolut'}</span><b class="num">${eur(lands[next].amt)}</b><span class="sub">${fmtDay(next,{weekday:'long',day:'numeric',month:'long'})}, ${lands[next].n} payout${lands[next].n>1?'s':''}</span>`
+    : `<span class="sub">Nothing on its way to ${DISCREET ? 'my bank' : 'Revolut'} right now</span>`;
+  const w = x => owed ? Math.max(x/owed*100, x?1.5:0) : 0;
+  document.getElementById('track').innerHTML = `<span class="s1" style="width:${w(pend)}%"></span><span class="s2" style="width:${w(avail)}%"></span><span class="s3" style="width:${w(way)}%"></span>`;
+  const st = [['Pending',pend,'Earned, held by Stripe for about a day'],
+              ['Available',avail,'Cleared, goes out with the next payout'],
+              ['On its way',way, next ? `Sent by Stripe, lands from ${fmtDay(next,{weekday:'short',day:'numeric',month:'short'})}` : 'Sent by Stripe, not in Revolut yet']];
+  document.getElementById('stages').innerHTML = st.map(([k,v,d])=>`<div class="stage"><div class="k">${k}</div><div class="v num">${eur(v)}</div><div class="d">${d}</div></div>`).join('');
+}
+
+// ---------- pace strip (follows the voice filter)
+function pace(){
+  const s = series(sel), T = N-1;
+  const pc = sel==null ? D.pace.reduce((a,p)=>[a[0]+p[0],a[1]+p[1]],[0,0]) : D.pace[sel];
+  const full7 = sum(s,N-8,N-1), prev7 = sum(s,N-15,N-8);
+  const t = new Date(D.today+'T12:00:00Z'), dom = t.getUTCDate();
+  const mtd = sum(s,N-dom,N), mtdDone = sum(s,N-dom,N-1);
+  const lmEnd = N-dom, lmLen = new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),0)).getUTCDate();
+  const lastMonth = sum(s,lmEnd-lmLen,lmEnd), lastMonthSame = sum(s,lmEnd-lmLen,lmEnd-lmLen+dom-1);
+  const allT = sum(s), firstIdx = s.findIndex(x=>x>0);
+  const hm = D.updatedLabel.split(', ')[1];
+  const month = t.toLocaleDateString('en-GB',{month:'long',timeZone:'UTC'});
+  const items = [
+    ['Today so far', pc[0], deltaHTML(pc[0],pc[1],`vs ${eur(pc[1])} by ${hm} yesterday`)],
+    ['Yesterday', s[T-1], deltaHTML(s[T-1],s[T-2],`vs ${eur(s[T-2])} the day before`)],
+    ['Last 7 full days', full7, deltaHTML(full7,prev7,`vs ${eur(prev7)} the 7 before`)],
+    [`${month} so far`, mtd, dom>2 ? deltaHTML(mtdDone,lastMonthSame,`first ${dom-1} days vs last month`) : `<span class="muted">${eur(lastMonth)} in all of last month</span>`],
+    ['All time', allT, firstIdx>=0 ? `<span class="muted">since ${fmtDay(dayISO(firstIdx),LONG)}, ${eur(Math.round(allT/(N-firstIdx)))} a day</span>` : ''],
+  ];
+  document.getElementById('pace').innerHTML = items.map(([k,v,d])=>`<div><div class="k">${k}</div><div class="v num">${eur(v)}</div><div class="d">${d}</div></div>`).join('');
+}
+
+// ---------- voice focus
+function focus(){
+  const el = document.getElementById('focus');
+  if (sel==null){ el.hidden = true; return; }
+  const v = V[sel], s = D.daily[sel];
+  let best = 0; s.forEach((x,i)=>{ if (x > s[best]) best = i; });
+  const d30 = sum(s,N-30), t30 = sum(total,N-30), rank = rank30.indexOf(sel)+1;
+  const first = s.findIndex(x=>x>0);
+  const pays = D.payouts.filter(p=>p[0]===sel && p[2]==='paid');
+  const facts = [
+    ['Earned all time', eur(sum(s))],
+    ['Earning since', first>=0 ? fmtDay(dayISO(first),LONG) : 'No earnings yet'],
+    ['Best day', s[best] ? `${eur(s[best])}, ${fmtDay(dayISO(best),LONG)}` : 'None yet'],
+    ['Last 30 days', `${eur(d30)}, ${t30?Math.round(d30/t30*1000)/10:0} % of all voices`],
+    ['Rank, last 30 days', `${rank} of ${NV}`],
+    ['Payments received', v.txns.toLocaleString('fr-FR') + (v.txns ? `, ${eur(Math.round(sum(s)/v.txns))} each on average` : '')],
+    ['Payouts to Revolut', pays.length ? `${pays.length}, ${eur(Math.round(pays.reduce((a,p)=>a+p[1],0)/pays.length))} on average` : 'None yet'],
+    ['Last payout', lastPaid[sel] ? `${eur(lastPaid[sel][0])}, ${fmtDay(lastPaid[sel][1])}` : 'None yet'],
+    ['Not in Revolut yet', eur(v.pending+v.available+onWay[sel]) + (nextLand[sel] ? `, next lands ${fmtDay(nextLand[sel])}` : '')],
+  ];
+  el.style.setProperty('--c', color(sel));
+  el.innerHTML = `<h2>${esc(v.name)}</h2><p class="sub">${DISCREET ? "Opened" : `Stripe account ${v.id}, opened`} ${fmtDay(utcISO(v.created),{day:'numeric',month:'long',year:'numeric'})}</p>
+    <div class="facts">${facts.map(([k,x])=>`<div><div class="k">${k}</div><div class="v num">${x}</div></div>`).join('')}</div>`;
+  el.hidden = false;
+}
+
+// ---------- daily chart
+function daily(){
+  const n = rangeDays(), from = N-n, x = [];
+  for (let d=from; d<N; d++) x.push(dayISO(d));
+  const big = n > 120, narrow = innerWidth < 600, ser = [];
+  const bar = c => ({color:c,borderColor:C.panel,borderWidth:big?0:1});
+  if (sel==null){
+    ser.push({name:'All voices',type:'bar',itemStyle:{color:'#ededed',borderRadius:big?0:[2,2,0,0]},
+      data:total.slice(from).map((c,k)=>({value:c/100,itemStyle:from+k===N-1?{color:'rgba(237,237,237,.45)'}:undefined}))});
+  } else {
+    ser.push({name:V[sel].name,type:'bar',itemStyle:{color:'#ededed',borderRadius:big?0:[2,2,0,0]},data:D.daily[sel].slice(from).map(c=>c/100)});
+  }
+  const s = series(sel);
+  ser.push({name:'7-day average',type:'line',symbol:'none',z:10,lineStyle:{width:1.5,color:'#8a8a8a',type:[4,3]},itemStyle:{color:'#8a8a8a'},
+    data:x.map((_,k)=>{const d=from+k,a=Math.max(0,d-6);return +(sum(s,a,d+1)/(d+1-a)/100).toFixed(2);})});
+  charts.cDaily.setOption({...base(),
+    grid:{left:44,right:10,top:12,bottom:big?58:26},
+    legend:{show:false},
+    tooltip:{...tip,trigger:'axis',axisPointer:{type:'shadow',shadowStyle:{color:'rgba(255,255,255,.07)'}},
+      formatter:ps=>{const d=ps[0].axisValue; const rows=ps.filter(p=>p.seriesType==='bar'&&p.value>0).sort((a,b)=>b.value-a.value);
+        const tot=rows.reduce((a,p)=>a+p.value,0), avg=ps.find(p=>p.seriesType==='line');
+        return `<b>${fmtDay(d,{weekday:'short',...LONG})}${d===D.today?', so far':''}</b><br>Total <b>${eur(Math.round(tot*100))}</b>`+
+          (avg?`<span style="color:${C.ink3}">, 7-day average ${eur(Math.round(avg.value*100))}</span>`:'')+'<br>'+
+          rows.slice(0,9).map(p=>`${p.marker}${esc(p.seriesName)} ${eur(Math.round(p.value*100))}`).join('<br>');}},
+    xAxis:{type:'category',data:x,...axisCommon,axisLabel:{color:C.ink3,fontSize:11,hideOverlap:true,formatter:v=>fmtDay(v, n>365?{month:'short',year:'2-digit'}:undefined)}},
+    yAxis:{type:'value',...axisCommon,axisLine:{show:false},axisLabel:{color:C.ink3,fontSize:11,formatter:v=>v.toLocaleString('fr-FR')+' €'}},
+    dataZoom: big ? [{type:'inside'},{type:'slider',height:18,bottom:6,borderColor:C.rule,fillerColor:'rgba(255,255,255,.12)',
+      dataBackground:{lineStyle:{color:C.ink3},areaStyle:{color:C.panel2}},textStyle:{color:C.ink3},handleStyle:{color:C.ink2},moveHandleSize:0}] : [],
+    series:ser}, true);
+  document.getElementById('legend').innerHTML = ser.map(x=>`<button class="chip${x.type==='line'?' line':''}" aria-pressed="true" data-n="${esc(x.name)}"><i style="background:${x.itemStyle.color}"></i><span>${esc(x.name)}</span></button>`).join('');
+  const tot = sum(s,from);
+  document.getElementById('dailyTitle').textContent = sel==null ? 'Earned per day, all voices' : `Earned per day, ${V[sel].name}`;
+  document.getElementById('dailySub').textContent = `${eur(tot)} in ${n} days, ${eur(Math.round(tot/n))} a day`;
+}
+
+// ---------- hour x weekday
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const RAMP = ['#121212','#333333','#666666','#a6a6a6','#ededed'];
+function week(){
+  const key = range==='all' ? 'all' : String(range);
+  const cells = Array(168).fill(0);
+  for (let vi=0; vi<NV; vi++) if (sel==null || vi===sel) D.week[key][vi].forEach((c,i)=>cells[i]+=c);
+  const data = cells.map((c,i)=>[i%24, Math.floor(i/24), c/100]);
+  const srt = cells.filter(c=>c>0).sort((a,b)=>a-b);
+  const max = (srt[Math.floor(srt.length*0.97)] || 100)/100;   // one huge payment must not flatten the map
+  let peak = 0; cells.forEach((c,i)=>{ if (c>cells[peak]) peak=i; });
+  const hh = h => String(h%24).padStart(2,'0')+':00';
+  charts.cWeek.setOption({...base(),
+    grid:{left:36,right:6,top:4,bottom:24},
+    tooltip:{...tip,formatter:p=>`${DAYS[p.value[1]]}, ${hh(p.value[0])} to ${hh(p.value[0]+1)}<br><b>${eur(Math.round(p.value[2]*100))}</b>`},
+    xAxis:{type:'category',data:[...Array(24).keys()].map(h=>h+'h'),...axisCommon,axisLine:{show:false},splitLine:{show:false},axisLabel:{color:C.ink3,fontSize:10,interval:innerWidth<600?5:2}},
+    yAxis:{type:'category',data:DAYS,inverse:true,...axisCommon,axisLine:{show:false},splitLine:{show:false},axisLabel:{color:C.ink3,fontSize:11}},
+    visualMap:{show:false,min:0,max,inRange:{color:RAMP}},
+    series:[{type:'heatmap',data,itemStyle:{borderColor:C.panel,borderWidth:2,borderRadius:3},emphasis:{itemStyle:{borderColor:C.ink,borderWidth:1}}}]}, true);
+  const lbl = {7:'last 7 days',30:'last 30 days',90:'last 90 days',365:'last year',all:'all time'}[key];
+  document.getElementById('weekTitle').textContent = sel==null ? 'When your voices earn' : `When ${V[sel].name} earns`;
+  document.getElementById('weekSub').textContent = cells[peak] ? `Busiest hour, ${lbl}: ${DAYS[Math.floor(peak/24)]} ${hh(peak%24)}` : '';
+}
+
+// ---------- calendar
+function cal(){
+  const s = series(sel), narrow = innerWidth < 600;
+  const days = narrow ? 182 : 364, from = Math.max(0, N-days);
+  const data = []; for (let d=from; d<N; d++) data.push([dayISO(d), s[d]/100]);
+  const sorted = data.map(x=>x[1]).filter(v=>v>0).sort((a,b)=>a-b);
+  const max = sorted[Math.floor(sorted.length*0.97)] || 1;   // one exceptional day must not flatten the rest
+  charts.cCal.setOption({...base(),
+    tooltip:{...tip,formatter:p=>`${fmtDay(p.value[0],{weekday:'short',...LONG})}<br><b>${eur(Math.round(p.value[1]*100))}</b>`},
+    visualMap:{show:false,min:0,max,inRange:{color:RAMP}},
+    calendar:{range:[dayISO(from), D.today],top:24,left:24,right:4,bottom:4,cellSize:['auto','auto'],
+      dayLabel:{firstDay:1,nameMap:['S','M','T','W','T','F','S'],color:C.ink3,fontSize:10,margin:6},
+      monthLabel:{color:C.ink3,fontSize:11,nameMap:'EN',margin:6},yearLabel:{show:false},
+      itemStyle:{color:'#121212',borderColor:C.panel,borderWidth:2},splitLine:{show:false}},
+    series:[{type:'heatmap',coordinateSystem:'calendar',data,itemStyle:{borderRadius:2}}]}, true);
+  let best = from; for (let d=from; d<N; d++) if (s[d]>s[best]) best=d;
+  document.getElementById('calTitle').textContent = narrow ? 'Every day, last 6 months' : 'Every day, last 12 months';
+  document.getElementById('calSub').textContent = s[best] ? `Best: ${eur(s[best])}, ${fmtDay(dayISO(best),LONG)}` : '';
+}
+
+// ---------- movers (always across voices)
+function movers(){
+  const rows = V.map((v,vi)=>({vi, now:sum(D.daily[vi],N-8,N-1), before:sum(D.daily[vi],N-15,N-8)})).map(r=>({...r,d:r.now-r.before}));
+  rows.sort((a,b)=>a.d-b.d);
+  const pick = [...rows.slice(0,6).filter(r=>r.d<0), ...rows.slice(-6).filter(r=>r.d>0)];
+  const narrow = innerWidth < 600;
+  charts.cMovers.setOption({...base(),
+    grid:{left:narrow?112:210,right:70,top:4,bottom:22},
+    tooltip:{...tip,trigger:'item',formatter:p=>{const r=pick[p.dataIndex];return `<b>${esc(V[r.vi].name)}</b><br>Last 7 full days ${eur(r.now)}<br>7 days before ${eur(r.before)}`;}},
+    xAxis:{type:'value',...axisCommon,axisLabel:{color:C.ink3,fontSize:11,formatter:v=>(v>0?'+':'')+v.toLocaleString('fr-FR')+' €'}},
+    yAxis:{type:'category',data:pick.map(r=>V[r.vi].name),...axisCommon,axisLine:{show:false},splitLine:{show:false},
+      axisLabel:{color:C.ink2,fontSize:12,width:narrow?104:200,overflow:'truncate'}},
+    series:[{type:'bar',barWidth:'58%',data:pick.map(r=>({value:+(r.d/100).toFixed(2),itemStyle:{color:r.d>0?C.up:C.down,borderColor:r.d>0?C.up:'#8a8a8a',borderWidth:1,borderRadius:r.d>0?[0,4,4,0]:[4,0,0,4]}})),
+      label:{show:true,position:'right',color:C.ink2,fontSize:11,formatter:p=>(p.value>0?'+':'')+eur(Math.round(p.value*100))}}]}, true);
+  const t30 = sum(total,N-30), top3 = rank30.slice(0,3).reduce((a,vi)=>a+sum(D.daily[vi],N-30),0);
+  document.getElementById('moversSub').textContent = `Last 7 full days vs the 7 before. Your top 3 voices made ${t30?Math.round(top3/t30*100):0} % of the last 30 days.`;
+}
+
+// ---------- table
+const COLS = [
+  ['name','Voice'],['today','Today'],['yday','Yesterday'],['d7','7 days'],['chg','vs 7 before'],['d30','30 days'],['share','Share, 30 days'],
+  ['all','All time'],['perday','Per day, all time'],['pending','Pending'],['available','Available'],['way','On its way'],['owed','Not in Revolut'],['fc30','Next 30 days'],['spark','Last 30 days']];
+function rows(){
+  const t30 = sum(total,N-30);
+  return V.map((v,vi)=>{const s=D.daily[vi], first=s.findIndex(x=>x>0), all=sum(s);
+    const now=sum(s,N-8,N-1), before=sum(s,N-15,N-8);
+    return {vi,name:v.name,today:s[N-1],yday:s[N-2],d7:sum(s,N-7),chg:before?(now-before)/before:(now?1e9:0),chgA:now,chgB:before,
+      d30:sum(s,N-30),share:t30?sum(s,N-30)/t30:0,all,perday:first>=0?Math.round(all/(N-first)):0,
+      pending:v.pending,available:v.available,way:onWay[vi],owed:v.pending+v.available+onWay[vi],fc30:D.fc.voices[vi].next30[1],trend:D.fc.voices[vi].trend};});
+}
+function spark(s){
+  const a=s.slice(N-30), m=Math.max(1,...a), w=96, h=22, bw=w/30;
+  return `<svg width="${w}" height="${h}" aria-hidden="true">${a.map((v,i)=>v?`<rect x="${(i*bw).toFixed(1)}" y="${(h-v/m*h).toFixed(1)}" width="${(bw-1).toFixed(1)}" height="${(v/m*h).toFixed(1)}" rx="1" fill="#ededed"/>`:'').join('')}</svg>`;
+}
+function table(){
+  const all = rows();
+  let R = query ? all.filter(r=>r.name.toLowerCase().includes(query)) : [...all];
+  R.sort((a,b)=> sortKey==='name' ? sortDir*a.name.localeCompare(b.name) : sortDir*(a[sortKey]-b[sortKey]));
+  const c = x => x ? eur(x) : `<span class="z">${eur(0)}</span>`;
+  const chg = r => r.chgB===0 ? (r.chgA?'<span class="delta up">new</span>':'<span class="z">none</span>') :
+    (p => `<span class="delta ${p>0?'up':p<0?'down':''}">${p>0?'▲ ':p<0?'▼ ':''}${Math.abs(p)} %</span>`)(Math.round(r.chg*100));
+  const maxShare = Math.max(...all.map(r=>r.share)) || 1;
+  const cell = (k,r) => k==='chg'?chg(r) : k==='share'?`<span class="share"><i style="width:${Math.max(2,Math.round(r.share/maxShare*56))}px"></i>${(r.share*100).toFixed(1)} %</span>`
+    : k==='owed'?`<span class="amber">${eur(r.owed)}</span>` : k==='fc30'?`<span class="muted">≈ </span>${eur(r.fc30)}` : c(r[k]);
+  const tot = k => all.reduce((a,r)=>a+r[k],0);
+  const foot = k => { if (k==='chg'){const a=tot('chgA'),b=tot('chgB');return chg({chg:b?(a-b)/b:0,chgA:a,chgB:b});}
+    if (k==='share') return '100 %';
+    if (k==='perday'){const f=total.findIndex(x=>x>0);return eur(Math.round(sum(total)/(N-f)));}
+    if (k==='fc30') return `<span class="muted">≈ </span>${eur(D.fc.total.next30[1])}`;
+    return k==='owed' ? `<span class="amber">${eur(tot(k))}</span>` : eur(tot(k)); };
+  document.getElementById('tbl').innerHTML =
+    `<thead><tr class="groups"><th></th><th colspan="8">Earned</th><th colspan="4" class="gs">Not in Revolut yet</th><th class="gs">Forecast</th><th></th></tr><tr>${COLS.map(([k,l])=>`<th scope="col" data-k="${k}" class="${['pending','fc30'].includes(k)?'gs':''}" ${k===sortKey?`aria-sort="${sortDir<0?'descending':'ascending'}"`:''}>${l}${k===sortKey?(sortDir<0?' ↓':' ↑'):''}</th>`).join('')}</tr></thead>
+     <tbody>${R.map(r=>`<tr data-vi="${r.vi}" aria-selected="${r.vi===sel}" tabindex="0"><td title="${esc(r.name)}"><span class="dot" style="background:${color(r.vi)}"></span>${esc(r.name)}</td>${COLS.slice(1,-1).map(([k])=>`<td class="${['pending','fc30'].includes(k)?'gs':''}">${cell(k,r)}</td>`).join('')}<td>${spark(D.daily[r.vi])}</td></tr>`).join('')}</tbody>
+     <tfoot><tr><td>All ${NV} voices</td>${COLS.slice(1,-1).map(([k])=>`<td class="${['pending','fc30'].includes(k)?'gs':''}">${foot(k)}</td>`).join('')}<td>${spark(total)}</td></tr></tfoot>`;
+}
+
+// ---------- ledger: what lands in Revolut, by day
+function ledger(){
+  const g = {};
+  for (const [vi,amt,st,cr,arr] of D.payouts){
+    if (sel!=null && vi!==sel) continue;
+    const s2 = ONWAY.has(st) ? 'way' : st, day = utcISO(arr), k = day+'|'+s2;
+    (g[k] ||= {day, st:s2, amt:0, n:0, who:{}});
+    g[k].amt += amt; g[k].n++; g[k].who[vi] = (g[k].who[vi]||0) + amt;
+  }
+  const cutoff = new Date(Date.parse(D.today+'T00:00:00Z') - 60*864e5).toISOString().slice(0,10);
+  const list = Object.values(g).filter(x=>x.day>=cutoff || x.st==='way').sort((a,b)=>b.day.localeCompare(a.day) || (a.st==='way'?-1:1));
+  const tag = st => st==='way'?'<span class="tag way">On its way</span>':st==='paid'?'<span class="tag">Arrived</span>':st==='failed'?'<span class="tag fail">Failed, back in balance</span>':`<span class="tag">${esc(st)}</span>`;
+  document.getElementById('ledger').innerHTML = `<thead><tr><th>Day</th><th>Amount</th><th>Payouts</th><th>Status</th><th style="text-align:left">From</th></tr></thead><tbody>${
+    list.map(x=>`<tr><td>${fmtDay(x.day,{weekday:'short',day:'numeric',month:'short'})}</td><td class="${x.st==='way'?'amber':''}">${eur(x.amt)}</td><td>${x.n}</td><td>${tag(x.st)}</td>
+      <td class="who">${Object.entries(x.who).sort((a,b)=>b[1]-a[1]).map(([vi,a])=>`${esc(V[vi].name)} ${eur(a)}`).join(', ')}</td></tr>`).join('') ||
+    '<tr><td colspan="5" class="muted">No payouts in the last 60 days.</td></tr>'}</tbody>`;
+  const way = list.filter(x=>x.st==='way').reduce((a,x)=>a+x.amt,0), recv = list.filter(x=>x.st==='paid').reduce((a,x)=>a+x.amt,0);
+  document.getElementById('ledgerSub').textContent = `${eur(way)} on its way, ${eur(recv)} arrived in the last 60 days. Each line should match one day on your Revolut statement.`;
+}
+
+// ---------- largest single payments (always across voices)
+function bigPayments(){
+  const all = sum(total);
+  const fmtTs = t => new Date(t*1000).toLocaleString('en-GB',{timeZone:'Europe/Rome',weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  document.getElementById('big').innerHTML = `<thead><tr><th>When</th><th>Amount</th><th style="text-align:left">Voice</th><th>Share of all-time earnings</th></tr></thead><tbody>${
+    D.big.map(([vi,net,t])=>`<tr><td>${fmtTs(t)}</td><td>${eur(net)}</td><td class="who"><span class="dot" style="background:${color(vi)}"></span>${esc(V[vi].name)}</td><td>${(net/all*100).toFixed(1)} %</td></tr>`).join('')}</tbody>`;
+  const tot = D.big.reduce((a,b)=>a+b[1],0);
+  document.getElementById('bigSub').textContent = `These ${D.big.length} payments add up to ${eur(tot)}, ${Math.round(tot/all*100)} % of everything your voices have earned.`;
+}
+
+// ---------- forecast (follows the voice filter)
+function forecast(){
+  const F = sel==null ? D.fc.total : D.fc.voices[sel], P = D.fc.payout;
+  const rng = a => `${eur(a[0])} to ${eur(a[2])}`;
+  const month = new Date(D.today+'T12:00:00Z').toLocaleDateString('en-GB',{month:'long',timeZone:'UTC'});
+  const s = series(sel), land = fmtDay(P.lands,{weekday:'long',day:'numeric',month:'long'});
+  let pay;
+  if (sel==null){
+    const wait = P.waiting.reduce((a,w)=>a+w[1],0);
+    pay = ['Next weekly payout', P.range[1], `Lands around ${land}, from ${P.voices.length} voices. Likely ${rng(P.range)}. ${P.waiting.length} voices are below the ${eur(P.minimum)} minimum and hold ${eur(wait)}.`];
+  } else {
+    const hit = P.voices.find(x=>x[0]===sel), bal = V[sel].available + V[sel].pending;
+    pay = hit ? ['Next weekly payout', hit[1], `Expected in the batch landing around ${land}.`]
+              : ['Next weekly payout', 0, `Not this week. ${eur(bal)} waiting, paid once it reaches about ${eur(P.minimum)}.`];
+  }
+  const trend = F.trend==null ? '' : ` Daily pace is ${F.trend>=0?'up':'down'} ${Math.abs(Math.round(F.trend*100))} % on 60 days ago.`;
+  const cards = [
+    ['Today will end around', F.today[1], `Likely ${rng(F.today)}. ${eur(s[N-1])} earned so far.`],
+    [`${month} will end around`, F.month[1], `Likely ${rng(F.month)}. ${D.fc.daysLeft} days to go.`],
+    ['Next 30 days', F.next30[1], `Likely ${rng(F.next30)}, not counting one-off payments.${trend}`],
+    pay,
+  ];
+  document.getElementById('fcCards').innerHTML = cards.map(([k,v,d])=>`<div class="fc-card"><div class="k">${k}</div><div class="v num">${v?'≈ '+eur(v):eur(0)}</div><div class="d">${d}</div></div>`).join('');
+  const T = D.fc.total;
+  const oneoff = F.oneoffDays ? `One-off payments of 10 € or more are left out: in the last year they added ${eur(F.oneoffYear)} on ${F.oneoffDays} day${F.oneoffDays>1?'s':''}.`
+    : (sel==null ? '' : 'This voice has had no one-off payments of 10 € or more in the last year.');
+  document.getElementById('fcNote').textContent = sel==null
+    ? `Checked against the last 180 days: 30-day forecasts were off by ${Math.round(T.mape30*100)} % on average, and usually too low (by ${Math.round((T.r30[1]-1)*100)} % at the median) because your earnings kept growing. If growth continues, expect the high end. ${oneoff}`
+    : (F.own && F.mape30!=null ? `For this voice, 30-day forecasts were off by ${Math.round(F.mape30*100)} % on average over the last 180 days. ${oneoff}`
+       : `This voice is too new to check the forecast against its own history, so the range uses the all-voices accuracy. ${oneoff}`);
+  // chart: last 30 days, then 30 days ahead
+  const past = 30, x = [];
+  for (let d=N-past; d<N+30; d++) x.push(dayISO(d));
+  const act = [...s.slice(N-past).map(c=>c/100), ...Array(30).fill(null)];
+  const mid = [...Array(past-1).fill(null), F.today[1]/100, ...F.daily.map(c=>c/100)];
+  const lo = [...Array(past-1).fill(null), F.today[0]/100, ...F.daily.map(c=>c*F.band[0]/100)];
+  const hi = [...Array(past-1).fill(null), F.today[2]/100, ...F.daily.map(c=>c*F.band[1]/100)];
+  const col = 'rgba(255,255,255,.85)';
+  charts.cFc.setOption({...base(),
+    grid:{left:44,right:10,top:14,bottom:26},
+    tooltip:{...tip,trigger:'axis',formatter:ps=>{const i=ps[0].dataIndex, d=x[i];
+      const head = `<b>${fmtDay(d,{weekday:'short',...LONG})}</b><br>`;
+      if (i < past-1) return head + `Earned ${eur(Math.round(act[i]*100))}`;
+      if (i === past-1) return head + `Earned so far ${eur(Math.round(act[i]*100))}<br>Likely full day ${eur(F.today[0])} to ${eur(F.today[2])}`;
+      return head + `Forecast ${eur(Math.round(mid[i]*100))}<br><span style="color:${C.ink3}">Likely ${eur(Math.round(lo[i]*100))} to ${eur(Math.round(hi[i]*100))}</span>`;}},
+    xAxis:{type:'category',data:x,...axisCommon,axisLabel:{color:C.ink3,fontSize:11,hideOverlap:true,formatter:v=>fmtDay(v)}},
+    yAxis:{type:'value',...axisCommon,axisLine:{show:false},axisLabel:{color:C.ink3,fontSize:11,formatter:v=>v.toLocaleString('fr-FR')+' €'}},
+    series:[
+      {name:'Earned',type:'bar',data:act,itemStyle:{color:col,borderRadius:[3,3,0,0]},barCategoryGap:'25%',
+        markLine:{silent:true,symbol:'none',label:{show:true,formatter:'Today',color:C.ink3,fontSize:11,position:'end'},lineStyle:{color:C.ink3,type:'dashed'},data:[{xAxis:past-1}]}},
+      {name:'low',type:'line',data:lo,stack:'band',symbol:'none',lineStyle:{opacity:0},silent:true},
+      {name:'range',type:'line',data:hi.map((h,i)=>h==null?null:+(h-lo[i]).toFixed(2)),stack:'band',symbol:'none',lineStyle:{opacity:0},areaStyle:{color:'rgba(255,255,255,.10)'},silent:true},
+      {name:'Forecast',type:'line',data:mid,symbol:'none',lineStyle:{width:2,type:[6,4],color:C.ink},itemStyle:{color:C.ink},z:5},
+    ]}, true);
+}
+
+// ---------- wiring
+const pick = document.getElementById('voice');
+function applyMode(){
+  V.forEach((v,i) => v.name = DISCREET ? `#${rank30.indexOf(i)+1} ***` : REAL[i]);
+  pick.innerHTML = `<option value="">All ${NV} voices</option>` + rank30.map(vi=>`<option value="${vi}">${esc(V[vi].name)}</option>`).join('');
+  pick.value = sel==null ? '' : String(sel);
+  document.getElementById('chainTitle').textContent = DISCREET ? 'earned by my voices, not in my bank yet' : 'earned by your voices and not in your Revolut yet';
+  document.getElementById('dest').textContent = DISCREET ? 'Bank' : 'Revolut';
+  document.getElementById('ledgerSub').previousElementSibling.textContent = DISCREET ? 'Bank landings' : 'Revolut landings';
+  const m = document.getElementById('mode'); m.setAttribute('aria-pressed', DISCREET); m.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c5 0 9 4.5 10 7a12.6 12.6 0 0 1-3.2 4.2M6.4 6.4C4.2 7.8 2.7 9.9 2 12c1 2.5 5 7 10 7 1.9 0 3.6-.6 5-1.5"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>' + (DISCREET ? '<span class="lbl">Discreet on</span>' : '<span class="lbl">Discreet</span>');
+}
+applyMode();
+document.getElementById('mode').onclick = () => {
+  DISCREET = !DISCREET; localStorage.setItem('fh_mode', JSON.stringify({discreet: DISCREET, at: Date.now() / 1000}));
+  applyMode(); hero(); movers(); bigPayments(); setVoice(sel);
+};
+function setVoice(vi){
+  sel = (vi===''||vi==null) ? null : +vi;
+  pick.value = sel==null ? '' : String(sel);
+  document.getElementById('clear').hidden = sel==null;
+  focus(); pace(); forecast(); daily(); week(); cal(); table(); ledger();
+}
+pick.onchange = e => setVoice(e.target.value);
+document.getElementById('clear').onclick = () => setVoice(null);
+document.querySelectorAll('#range button').forEach(b => {
+  b.setAttribute('aria-pressed', b.dataset.r===range);
+  b.onclick = () => { range = b.dataset.r; document.querySelectorAll('#range button').forEach(x=>x.setAttribute('aria-pressed', x===b)); daily(); week(); };
+});
+const tbl = document.getElementById('tbl');
+tbl.onclick = e => {
+  const th = e.target.closest('th');
+  if (th){ const k = th.dataset.k; if (k==='spark') return; sortDir = k===sortKey ? -sortDir : (k==='name'?1:-1); sortKey = k; table(); return; }
+  const tr = e.target.closest('tbody tr');
+  if (tr){ setVoice(+tr.dataset.vi===sel ? null : tr.dataset.vi); scrollTo({top:document.querySelector('.controls').offsetTop-4,behavior:RM?'auto':'smooth'}); }
+};
+tbl.onkeydown = e => { if ((e.key==='Enter'||e.key===' ') && e.target.matches('tbody tr')) { e.preventDefault(); e.target.click(); } };
+document.getElementById('search').oninput = e => { query = e.target.value.trim().toLowerCase(); table(); };
+
+const ageMin = Math.round((Date.now()/1000 - D.updated)/60);
+document.getElementById('updated').innerHTML = `Updated ${D.updatedLabel}` + (ageMin > 180 ? `<span class="stale">, ${Math.round(ageMin/60)} hours ago</span>` : '');
+
+document.getElementById('legend').onclick = e => { const b = e.target.closest('.chip'); if (!b) return;
+  b.setAttribute('aria-pressed', b.getAttribute('aria-pressed')==='false'); charts.cDaily.dispatchAction({type:'legendToggleSelect', name:b.dataset.n}); };
+['cFc','cDaily','cWeek','cCal','cMovers'].forEach(id => charts[id] = echarts.init(document.getElementById(id)));
+hero(); movers(); bigPayments(); setVoice(null);
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { Object.values(charts).forEach(c=>c.resize()); forecast(); daily(); cal(); movers(); week(); }, 150); });
+})();
+</script>
+</body>
+</html>
